@@ -20,7 +20,7 @@ services:
       - "6000"
 
   nginx:
-    image: nginx:stable-alpine
+    image: docker.io/nginx:stable-alpine
     ports:
       - "80:80"
       - "443:443"
