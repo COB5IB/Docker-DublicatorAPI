@@ -6,8 +6,8 @@ services:
       context: ./duplicator
     environment:
       - LISTEN_PORT=5000
-      - TARGET1=https://httpbin.org/post
-      - TARGET2=https://postman-echo.com/post
+      - TARGET1=https://censhare-cons-de.bshg.com
+      - TARGET2=https://csq2.bshg.com
     expose:
       - "5000"
 
