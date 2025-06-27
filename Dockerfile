@@ -1,12 +1,31 @@
-FROM python:3.10-slim
+# Build sırasında proxy ayarlarını almak için arg tanımları
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
 ARG NO_PROXY
 
+FROM python:3.11-slim
+
+# Proxy bilgilerini environment olarak da geçir (opsiyonel, bazı pip işlemleri için gerekebilir)
+ENV HTTP_PROXY=$HTTP_PROXY \
+    HTTPS_PROXY=$HTTPS_PROXY \
+    NO_PROXY=$NO_PROXY
+
+# Gerekli Python paketlerini yükle
+RUN pip install --no-cache-dir flask requests
+
+# Çalışma dizini
 WORKDIR /app
-#COPY crt-converted/*.crt /usr/local/share/ca-certificates/
-#RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
+
+# Uygulama dosyasını konteynıra kopyala
 COPY duplicator.py .
-RUN pip install flask requests
-EXPOSE 6000
+
+# Log klasörü oluştur
+RUN mkdir -p /logs
+
+# Ortam değişkenleri
+ENV LOG_DIR=/logs \
+    LISTEN_PORT=6000 \
+    FORWARD_TIMEOUT=5
+
+# Uygulama başlat
 CMD ["python", "duplicator.py"]
