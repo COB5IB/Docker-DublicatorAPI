@@ -4,16 +4,15 @@ services:
   duplicator:
     build:
       context: .
-      args:
-        HTTP_PROXY: ${HTTP_PROXY}
-        HTTPS_PROXY: ${HTTPS_PROXY}
-        NO_PROXY: ${NO_PROXY}
     environment:
-      - TARGET1=http://example1.local/api
-      - TARGET2=http://example2.local/api
+      - TARGET1=https://censhare-cons-de.bshg.com
+      - TARGET2=https://csq2.bshg.com
       - LOG_DIR=/logs
       - LISTEN_PORT=6000
       - FORWARD_TIMEOUT=5
+      - AUTH_USERNAME=censhare-rest
+      - AUTH_PASSWORD=censhare-rest
+      - NO_PROXY=localhost,127.0.0.1,duplicator,nginx,si0vm10431.bsh.corp.bshg.com,censhare-cons-de.bshg.com,csq2.bshg.com
     volumes:
       - ./logs:/logs
     expose:
