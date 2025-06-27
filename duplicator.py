@@ -48,7 +48,7 @@ def handle_request():
     return "Forwarding failed", 502
 
 if __name__ == '__main__':
-    listen_port = int(os.environ.get("LISTEN_PORT", "5000"))
+    listen_port = int(os.environ.get("LISTEN_PORT", "6000"))
     app.run(host="0.0.0.0", port=listen_port)
 
 
