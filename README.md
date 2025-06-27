@@ -1,28 +1,106 @@
-# HTTP Duplicator (Güncellenmiş)
+# 🔁 HTTPS Destekli API İstek Çoklayıcı (Duplicator)
 
-Bu proje, gelen HTTP POST isteklerini iki farklı hedefe yönlendirir. Eğer ilk hedef başarılı şekilde yanıt dönerse, bu yanıt doğrudan client'a response olarak iletilir. Artık üçüncü bir hedefe yeniden POST edilmez.
+Bu proje, gelen bir API `POST` isteğini iki farklı hedefe (TARGET1 ve TARGET2) çoğaltarak HTTPS üzerinden ileten bir HTTP Duplicator servisidir.  
+NGINX ile reverse proxy kurularak HTTPS desteği sağlanır.
 
-## Kullanım
+---
 
-```bash
-podman build -t http-duplicator .
-podman run -d \
-  -p 9401:9401 \
-  -e LISTEN_PORT=9401 \
-  -e TARGET1=10.49.77.153:9501 \
-  -e TARGET2=10.49.77.153:9502 \
-  -e LOG_DIR=/logs \
-  -v /var/log/duplicator_logs/9401:/logs:Z \
-  --name duplicator_9401 \
-  http-duplicator
-```
+## 🚀 Özellikler
 
-## Sağlık Kontrolü
+- Gelen veriyi `TARGET1` ve `TARGET2` adreslerine çoğaltır
+- HTTPS endpoint'i ile çalışır
+- Flask + Requests ile hızlı, sade ve genişletilebilir
+- Log dosyası: `/logs/duplicator.log`
+
+---
+
+## 🏗️ Mimari
 
 ```bash
-curl http://localhost:9401/healthz
+📦 Docker-DuplicatorAPI/
+├── duplicator/            # Flask app
+│   ├── Dockerfile
+│   └── duplicator.py
+├── nginx/                 # NGINX reverse proxy
+│   ├── nginx.conf
+│   └── ssl/
+│       ├── fullchain.pem  # SSL certificate
+│       └── privkey.pem    # SSL private key
+└── docker-compose.yml
 ```
 
-## Loglar
+---
 
-Loglar host sistemde `/var/log/duplicator_logs/9401/duplicator.log` dosyasına yazılır.
+## ⚙️ Gereksinimler
+
+- Docker
+- Docker Compose
+- (Opsiyonel) Gerçek domain ve sertifika veya self-signed sertifika
+
+---
+
+## ⚙️ Kurulum ve Çalıştırma
+
+### 1. Ortam Değişkenlerini Ayarla
+
+`docker-compose.yml` içinde hedefleri tanımla:
+
+```yaml
+environment:
+  - TARGET1=https://httpbin.org/post
+  - TARGET2=https://postman-echo.com/post
+```
+
+### 2. SSL Sertifikalarını Yerleştir
+
+```bash
+mkdir -p nginx/ssl
+cp your_cert.pem nginx/ssl/fullchain.pem
+cp your_key.pem nginx/ssl/privkey.pem
+```
+
+### 3. Uygulamayı Başlat
+
+```bash
+docker-compose up --build
+```
+
+---
+
+## ✅ Test Et
+
+```bash
+curl -k -X POST https://localhost/ -d "merhaba burak"
+```
+
+> `-k` flag'i self-signed sertifikalar için kullanılır.
+
+Sağlık kontrolü için:
+
+```bash
+curl -k https://localhost/healthz
+```
+
+---
+
+## 🗂 Loglar
+
+Tüm gelen istekler ve hedef yanıt durumları şu dosyaya yazılır:
+
+```
+/logs/duplicator.log
+```
+
+---
+
+## 📌 Notlar
+
+- HTTPS portu dış dünyaya açık: `443`
+- İçeride Flask HTTP çalışır: `5000`
+- NGINX proxy ile HTTPS terminasyonu yapılır.
+
+---
+
+## 📜 Lisans
+
+MIT Lisansı

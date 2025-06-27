@@ -8,4 +8,5 @@ COPY crt-converted/*.crt /usr/local/share/ca-certificates/
 RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
 COPY duplicator.py .
 RUN pip install flask requests
+EXPOSE 5000
 CMD ["python", "duplicator.py"]
