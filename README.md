@@ -96,7 +96,7 @@ Tüm gelen istekler ve hedef yanıt durumları şu dosyaya yazılır:
 ## 📌 Notlar
 
 - HTTPS portu dış dünyaya açık: `443`
-- İçeride Flask HTTP çalışır: `5000`
+- İçeride Flask HTTP çalışır: `6000`
 - NGINX proxy ile HTTPS terminasyonu yapılır.
 
 ---
